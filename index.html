@@ -137,55 +137,53 @@
         .receipt-header { 
             display: flex; 
             justify-content: space-between; 
-            align-items: center; 
+            align-items: flex-start; 
             padding-bottom: 3px; 
             margin-bottom: 2px;
         }
-        
-        .blue-copy .receipt-header { border-bottom: 2px solid #0056b3; }
-        .red-copy .receipt-header { border-bottom: 2px solid #c82333; }
 
         .header-right h1 { margin: 0; font-size: 21px; color: #002d62; font-weight: bold; line-height: 1.2; }
-        .header-right p { margin: 2px 0 0 0; font-size: 10.5px; font-weight: bold; }
-        .blue-copy .header-right p { color: #0056b3; }
-        .red-copy .header-right p { color: #c82333; }
+        .header-right p { margin: 2px 0 0 0; font-size: 10.5px; font-weight: bold; color: #555; }
         
+        /* جێگیرکردنی بەروار و ژمارە لە ژێر نووسینەکەی لای ڕاست */
+        .header-meta-block {
+            margin-top: 5px;
+            display: flex;
+            gap: 20px;
+            font-size: 12px;
+            color: #002d62;
+            font-weight: bold;
+        }
+
         .header-center {
             text-align: center;
-            align-self: flex-end;
-            margin-bottom: 2px;
+            align-self: center;
+            margin-top: 10px;
         }
         .header-center .main-title {
-            font-size: 13px;
+            font-size: 14px;
             color: #002d62;
             font-weight: bold;
             letter-spacing: 0.5px;
+            border-bottom: 2px solid #002d62;
+            padding-bottom: 2px;
         }
 
         .header-left {
             text-align: left;
         }
         .header-left .en-title {
-            font-size: 20px;
+            font-size: 22px;
             font-weight: bold;
             color: #002d62;
             margin: 0;
             font-family: 'Arial', sans-serif;
         }
-        .header-left .meta-info {
-            display: flex;
-            gap: 15px;
-            justify-content: flex-end;
-            margin-top: 4px;
-            font-size: 11.5px;
-            color: #002d62;
-            font-weight: bold;
-        }
 
         .receipt-table { 
             width: 100%; 
             border-collapse: collapse; 
-            margin-top: 4px; 
+            margin-top: 6px; 
         }
         .receipt-table th, .receipt-table td { 
             padding: 5px; 
@@ -201,11 +199,11 @@
         .blue-copy .receipt-table th { background-color: #e6f0fa; }
         .red-copy .receipt-table th { background-color: #fbebeb; }
         
+        /* درێژکردنی خانەکان بە شێوەیەکی گونجاو بۆ خوارەوە */
         .receipt-table td.empty-cell {
-            height: 38px;
+            height: 48px;
         }
 
-        /* بەشی خوارەوەی وەسڵەکە - ئیمزاکان لای چەپ و ڕاست */
         .receipt-footer {
             display: flex;
             justify-content: space-between;
@@ -222,8 +220,8 @@
             font-size: 11px;
         }
         .sig-line {
-            width: 110px;
-            margin-top: 18px;
+            width: 120px;
+            margin-top: 15px;
         }
         .blue-copy .sig-line { border-top: 1px dashed #0056b3; }
         .red-copy .sig-line { border-top: 1px dashed #c82333; }
@@ -320,16 +318,16 @@
                                         <div class="header-right">
                                             <h1>کۆمپانیای مس</h1>
                                             <p>بۆ بەرهەمهێنانی کێبڵی مس و پاسبار / سنوردار</p>
+                                            <div class="header-meta-block">
+                                                <div>ژمارە: <span style="color:${item.borderHex}; font-size: 14px;">${item.num}</span></div>
+                                                <div>٢٠٢&nbsp;&nbsp; / &nbsp;&nbsp;&nbsp;&nbsp; / &nbsp;&nbsp;&nbsp;&nbsp; </div>
+                                            </div>
                                         </div>
                                         <div class="header-center">
                                             <div class="main-title">پسوڵەی نیشتکردنی ئامێر</div>
                                         </div>
                                         <div class="header-left">
                                             <h1 class="en-title">MS Company Ltd.</h1>
-                                            <div class="meta-info">
-                                                <div>ژمارە: <span style="color:${item.borderHex}; font-size: 13px;">${item.num}</span></div>
-                                                <div style="direction: ltr; text-align: right;">٢٠٢ &nbsp; / &nbsp; &nbsp; &nbsp; / &nbsp; &nbsp; &nbsp; :بەروار</div>
-                                            </div>
                                         </div>
                                     </div>
 
@@ -366,7 +364,7 @@
                                     </div>
                                     <div class="sig-container" style="font-size: 10px;">
                                         <span>ئیمزای خاوەن ئامێر</span>
-                                        <div class="sig-line" style="margin-top: 17px;"></div>
+                                        <div class="sig-line"></div>
                                     </div>
                                 </div>
                             </div>
