@@ -5,21 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>سیستەمی چاپی وەسڵی MS Company</title>
     <style>
-        /* ستایلی گشتی بۆ بینینی ناو وێبسایتەکە */
+        /* ستایلی بنەڕەتی و گونجاندن لەگەڵ هەموو شاشەکان */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f2f5;
+            background-color: #f4f6f9;
             margin: 0;
-            padding: 20px;
+            padding: 10px;
             direction: rtl;
         }
 
         .controls {
             background-color: #ffffff;
             padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
             text-align: center;
             position: sticky;
             top: 10px;
@@ -27,155 +27,181 @@
         }
 
         .btn {
-            background-color: #007bff;
+            background-color: #0056b3;
             color: white;
             border: none;
-            padding: 10px 20px;
-            font-size: 16px;
+            padding: 12px 18px;
+            font-size: 14px;
             font-weight: bold;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
-            margin: 0 10px;
-            transition: 0.3s;
+            margin: 5px;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .btn:hover {
-            background-color: #0056b3;
-        }
-
-        .btn-blue {
-            background-color: #17a2b8;
-        }
-        .btn-blue:hover {
-            background-color: #117a8b;
-        }
-
-        .btn-print {
-            background-color: #28a745;
-        }
-        .btn-print:hover {
-            background-color: #218838;
-        }
+        .btn:hover { background-color: #004085; }
+        .btn-blue { background-color: #17a2b8; }
+        .btn-blue:hover { background-color: #138496; }
+        .btn-print { background-color: #28a745; }
+        .btn-print:hover { background-color: #218838; }
 
         #print-area {
             display: flex;
             flex-direction: column;
             align-items: center;
+            width: 100%;
         }
 
-        /* ستایلی لاپەڕەی A4 لەسەر شاشە */
+        /* پیشاندانی وەسڵەکان لەسەر شاشەی مۆبایل و کۆمپیوتەر */
         .page-container {
-            width: 210mm;
-            height: 297mm;
+            width: 100%;
+            max-width: 800px;
             background-color: white;
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: 1fr 1fr;
-            box-sizing: border-box;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            grid-template-columns: 1fr; /* لەسەر مۆبایل یەک یەک دێن */
+            gap: 15px;
             margin-bottom: 20px;
+            padding: 10px;
+            box-sizing: border-box;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
 
-        /* ستایلی ناوەوەی هەر وەسڵێک */
+        @media (min-width: 768px) {
+            .page-container {
+                grid-template-columns: 1fr 1fr; /* لەسەر کۆمپیوتەر دەبێتە دوو ستوون */
+            }
+        }
+
+        /* دیزاینی وەسڵەکە ڕێک بە ڕەنگی شین و سوور وەک وێنەکە */
         .receipt {
-            border: 1px dashed #b5b5b5;
-            padding: 15mm 10mm 10mm 10mm;
+            border: 2px solid #002d62; /* چوارچێوەی شینی تۆخ */
+            padding: 15px;
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            position: relative;
             background-color: #ffffff;
+            border-radius: 6px;
+            position: relative;
+            min-height: 420px;
         }
 
-        /* گۆڕینی ڕەنگ بۆ وەسڵی شینی کۆمپانیا */
+        /* دۆخی کۆپی شین بۆ کۆمپانیا */
         .blue-mode .receipt {
-            background-color: #f0f7ff !important;
-            color: #002d5a;
+            background-color: #e6f0fa !important;
         }
 
         .receipt-header {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
-            border-bottom: 2px solid #333;
-            padding-bottom: 8px;
+            align-items: center;
+            border-bottom: 2px solid #d32f2f; /* هێڵی سوور */
+            padding-bottom: 5px;
         }
 
         .company-info h1 {
             margin: 0;
-            font-size: 22px;
-            color: #d32f2f;
-        }
-        .blue-mode .company-info h1 {
-            color: #0056b3;
+            font-size: 20px;
+            color: #002d62; /* ناوی کۆمپانیا بە شین */
+            font-weight: bold;
         }
 
         .company-info p {
             margin: 2px 0 0 0;
-            font-size: 11px;
-            color: #555;
-        }
-
-        .receipt-title {
-            text-align: left;
+            font-size: 10px;
+            color: #d32f2f; /* ژێر دێڕ بە سوور */
+            font-weight: bold;
         }
 
         .receipt-title h2 {
             margin: 0;
-            font-size: 20px;
+            font-size: 22px;
+            color: #002d62;
+            font-weight: 900;
+        }
+
+        .receipt-subtitle {
+            text-align: center;
+            font-size: 11px;
+            color: #002d62;
+            margin: 5px 0;
             font-weight: bold;
         }
 
         .receipt-meta {
             display: flex;
             justify-content: space-between;
-            margin-top: 10px;
-            font-size: 13px;
+            margin-top: 5px;
+            font-size: 12px;
+            color: #002d62;
+            font-weight: bold;
         }
 
-        /* ستایلی خشتەی وەسڵەکە ڕێک هاوشێوەی وێنەکە */
+        /* خشتەی وەسڵەکە بە شێوازی وێنەکە */
         .receipt-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 15px;
+            margin-top: 10px;
         }
 
         .receipt-table th, .receipt-table td {
-            border: 1px solid #333;
+            border: 1px solid #002d62;
             padding: 6px;
             text-align: center;
-            font-size: 12px;
+            font-size: 11px;
+            color: #002d62;
         }
 
         .receipt-table th {
-            background-color: #f2f2f2;
+            background-color: #f0f4f8;
             font-weight: bold;
         }
-        
+
         .blue-mode .receipt-table th {
-            background-color: #d1e6ff;
+            background-color: #cbdbe6;
+        }
+
+        .vertical-text {
+            font-size: 9px;
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+            padding: 2px !important;
+            line-height: 1.1;
+        }
+
+        .notes-section {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #002d62;
+            font-weight: bold;
         }
 
         .receipt-footer {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-end;
             margin-top: 15px;
-            font-size: 13px;
+            font-size: 12px;
+            color: #002d62;
+            font-weight: bold;
         }
 
-        .signature-space {
+        .signature-box {
             text-align: center;
-            width: 100px;
+            width: 80px;
         }
+
         .signature-line {
-            border-top: 1px dashed #333;
+            border-top: 1px dashed #002d62;
             margin-top: 25px;
         }
 
         /* --------------------------------------------------
-           ڕێکخستنەکانی تایبەت بە چاپکردن (@media print)
+           ستایلی تایبەت بە کاتی چاپکردن لەسەر ئەی فۆڕ (A4)
         -------------------------------------------------- */
         @media print {
             body {
@@ -184,7 +210,7 @@
             }
 
             .controls {
-                display: none; /* شاردنەوەی دوگمەکان لە کاتی چاپدا */
+                display: none;
             }
 
             @page {
@@ -195,15 +221,23 @@
             .page-container {
                 width: 210mm;
                 height: 297mm;
-                page-break-after: always; /* ناچارکردنی پرینتەر بۆ چوونە لاپەڕەی نوێ */
+                max-width: none;
+                grid-template-columns: 1fr 1fr !important; /* ناچارکردنی بۆ ٢ ستوون لە چاپدا */
+                grid-template-rows: 1fr 1fr !important;
+                page-break-after: always;
                 box-shadow: none;
                 margin-bottom: 0;
-                -webkit-print-color-adjust: exact; /* پاراستنی ڕەنگەکان لە کاتی چاپ */
+                padding: 5mm;
+                gap: 5mm;
+                -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
             }
-            
+
             .receipt {
-                border: 1px dashed #b5b5b5;
+                border: 2px solid #002d62;
+                border-radius: 0;
+                min-height: auto;
+                height: 100%;
             }
         }
     </style>
@@ -211,10 +245,10 @@
 <body>
 
     <div class="controls">
-        <button class="btn" onclick="setCopyMode('white')">وەسڵی سپی (کڕیار)</button>
-        <button class="btn btn-blue" onclick="setCopyMode('blue')">وەسڵی شین (کۆمپانیا)</button>
+        <button class="btn" onclick="setCopyMode('white')">⚪ وەسڵی سپی (کڕیار)</button>
+        <button class="btn btn-blue" onclick="setCopyMode('blue')">🔵 وەسڵی شین (کۆمپانیا)</button>
         <button class="btn btn-print" onclick="window.print()">🖨️ چاپکردنی وەسڵەکان</button>
-        <p style="margin: 10px 0 0 0; font-size: 14px; color: #666;">دۆخی ئێستا: <strong id="current-mode">سپی (کڕیار)</strong></p>
+        <p style="margin: 8px 0 0 0; font-size: 13px; color: #555;">دۆخی ئێستا: <strong id="current-mode" style="color:#0056b3;">سپی (کڕیار)</strong></p>
     </div>
 
     <div id="print-area"></div>
@@ -223,63 +257,74 @@
         const printArea = document.getElementById('print-area');
         const modeText = document.getElementById('current-mode');
 
-        // نەخشەی دروستکردنی ٢٠٠ وەسڵ بە شێوازی ٤ وەسڵ لە هەر لاپەڕەیەکدا
         function generateReceipts() {
-            printArea.innerHTML = ''; // پاککردنەوەی شوێنەکە پێش دەستپێکردن
+            printArea.innerHTML = ''; 
             
-            // لوپەکە ٤ وەسڵ ٤ وەسڵ زیاد دەکات تا دەگاتە ٢٠٠
             for (let i = 1; i <= 200; i += 4) {
                 let pageHtml = `<div class="page-container">`;
                 
-                // جێگیرکردنی ٤ وەسڵ لەناو یەک لاپەڕەی A4
                 for (let j = 0; j < 4; j++) {
                     let receiptNum = i + j;
                     if (receiptNum <= 200) {
                         pageHtml += `
                             <div class="receipt">
-                                <div class="receipt-header">
-                                    <div class="company-info">
-                                        <h1>MS Company Ltd.</h1>
-                                        <p>بۆ بەرهەمهێنانی کێبڵی مس و پاسبار / سنوردار</p>
+                                <div>
+                                    <div class="receipt-header">
+                                        <div class="company-info">
+                                            <h1>MS Company Ltd.</h1>
+                                            <p>بۆ بەرهەمهێنانی کێبڵی مس و پاسبار / سنوردار</p>
+                                        </div>
+                                        <div class="receipt-title">
+                                            <h2>وەسڵ</h2>
+                                        </div>
                                     </div>
-                                    <div class="receipt-title">
-                                        <h2>وەسڵ</h2>
+
+                                    <div class="receipt-subtitle">
+                                        پسوڵەی نیشتکردنی ئامێر کاتی کورتای هاتن کۆی کارکردن ڕۆژ نرخ کۆی نرخ تێبینی شۆفێر چاوەدێر
                                     </div>
-                                </div>
 
-                                <div class="receipt-meta">
-                                    <div>ژمارە: <strong>${receiptNum}</strong></div>
-                                    <div>بەروار: ٢٠٢٦ / __ / __</div>
-                                </div>
+                                    <div class="receipt-meta">
+                                        <div>ژمارە: <span style="color:#d32f2f;">${receiptNum}</span></div>
+                                        <div>بەروار: ٢٠٢٦ / __ / __</div>
+                                    </div>
 
-                                <table class="receipt-table">
-                                    <thead>
-                                        <tr>
-                                            <th style="width: 40%;">ناوی شۆفێر</th>
-                                            <th style="width: 15%;">کاتی دەستپێکردن</th>
-                                            <th style="width: 15%;">کاتی کۆتایی هاتن</th>
-                                            <th style="width: 15%;">کۆی کارکردن</th>
-                                            <th style="width: 15%;">نرخ</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td style="height: 35px;"></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                    <table class="receipt-table">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 35%;">ناوی شۆفێر</th>
+                                                <th class="vertical-text" style="width: 13%;">کاتی دەستپێکردن</th>
+                                                <th class="vertical-text" style="width: 13%;">کاتی کۆتایی هاتن</th>
+                                                <th class="vertical-text" style="width: 13%;">کاتی کارکردن (سەعات)</th>
+                                                <th class="vertical-text" style="width: 13%;">کۆی کارکردن (سەعات / ڕۆژ)</th>
+                                                <th style="width: 13%;">نرخ</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td style="height: 55px;"></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
 
-                                <div style="margin-top: 10px; font-size: 13px;">
-                                    <strong>تێبینی:</strong> ............................................................................................
+                                    <div class="notes-section">
+                                        تێبینی: ....................................................................................
+                                        <br><br>
+                                        ............................................................................................
+                                    </div>
                                 </div>
 
                                 <div class="receipt-footer">
-                                    <div>کۆی گشتی نرخ: ....................</div>
-                                    <div class="signature-space">
+                                    <div>کۆی گشتی نرخ: .........................</div>
+                                    <div class="signature-box">
+                                        شوفێر
+                                        <div class="signature-line"></div>
+                                    </div>
+                                    <div class="signature-box">
                                         چاوەدێر
                                         <div class="signature-line"></div>
                                     </div>
@@ -288,13 +333,11 @@
                         `;
                     }
                 }
-                
                 pageHtml += `</div>`;
                 printArea.innerHTML += pageHtml;
             }
         }
 
-        // نەخشەی گۆڕینی ڕەنگی وەسڵەکە (سپی بۆ کڕیار / شین بۆ کۆمپانیا)
         function setCopyMode(mode) {
             if (mode === 'blue') {
                 document.body.classList.add('blue-mode');
@@ -303,11 +346,10 @@
             } else {
                 document.body.classList.remove('blue-mode');
                 modeText.innerText = "سپی (کڕیار)";
-                modeText.style.color = "#007bff";
+                modeText.style.color = "#0056b3";
             }
         }
 
-        // لەکاتی مانەوە و باربوونی لاپەڕەکە، وەسڵەکان دروستبکە
         generateReceipts();
     </script>
 </body>
