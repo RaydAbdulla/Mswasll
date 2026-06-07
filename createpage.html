@@ -3,224 +3,269 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>دەستکاریکردنی وەسڵ - MS Company</title>
+    <title>پێشاندانی شێوازی چاپی A4 (لاکێشەیی)</title>
     <style>
+        /* ستایلی بنەڕەتی بۆ شاشە */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f2f5;
+            background-color: #525659; /* باکگراوندی تاریک بۆ ئەوەی پەڕەی A4 بە ڕوونی دیار بێت */
             margin: 0;
             padding: 20px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            align-items: center;
+            direction: rtl;
         }
-        @media (min-width: 992px) {
-            body { flex-direction: row; }
+
+        .top-bar {
+            background-color: #ffffff;
+            padding: 12px 25px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            text-align: center;
+            width: 100%;
+            max-width: 800px;
+            box-sizing: border-box;
         }
-        
-        /* پانێڵی کۆنترۆڵ لە لای چەپ */
-        .editor-panel {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            flex: 1;
-            min-width: 320px;
+
+        .btn {
+            color: white; border: none; padding: 10px 20px; font-size: 14px;
+            font-weight: bold; border-radius: 6px; cursor: pointer; margin: 5px;
+            text-decoration: none; display: inline-flex; align-items: center;
+        }
+        .btn-back { background-color: #007bff; }
+        .btn-print { background-color: #28a745; }
+
+        /* ستایلی پەڕەی A4 لەسەر شاشە ڕێک بە قەبارەی ڕاستەقینە */
+        .a4-page {
+            width: 210mm;
+            height: 297mm;
+            background-color: white;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+            box-sizing: border-box;
+            padding: 10mm;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            justify-content: space-between; /* دابەشکردنی ٤ وەسڵەکە بە یەکسانی */
+            margin-bottom: 20px;
         }
-        
-        /* بینینی ڕاستەوخۆی وەسڵەکە لە لای ڕاست */
-        .preview-panel {
-            flex: 1.5;
+
+        /* ستایلی وەسڵ بە شێوەی لاکێشەیی درێژکۆلە */
+        .receipt-landscape {
+            width: 100%;
+            height: 63mm; /* قەبارەی گونجاو بۆ ئەوەی ٤ دانە ڕێک لە ئەی فۆڕ جێببێتەوە */
+            border: 2px solid #002d62;
+            box-sizing: border-box;
+            padding: 12px;
             display: flex;
-            justify-content: center;
-            align-items: flex-start;
+            flex-direction: column;
+            justify-content: space-between;
+            background-color: #ffffff;
         }
 
-        h3 { margin-top: 0; color: #002d62; border-bottom: 2px solid #d32f2f; padding-bottom: 5px; }
-        .form-group { display: flex; flex-direction: column; gap: 5px; }
-        label { font-size: 14px; font-weight: bold; color: #333; }
-        input, select { padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; }
+        .receipt-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #d32f2f;
+            padding-bottom: 3px;
+        }
+
+        .company-info h1 { margin: 0; font-size: 18px; color: #002d62; font-weight: bold; }
+        .company-info p { margin: 2px 0 0 0; font-size: 10px; color: #d32f2f; font-weight: bold; }
         
-        .btn {
-            background-color: #28a745; color: white; border: none; padding: 12px;
-            font-weight: bold; border-radius: 6px; cursor: pointer; text-align: center; text-decoration: none;
-        }
-        .btn-back { background-color: #6c757d; }
+        .receipt-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+        .receipt-table th, .receipt-table td { border: 1px solid #002d62; padding: 5px; text-align: center; font-size: 11px; color: #002d62; }
+        .receipt-table th { background-color: #f0f4f8; }
 
-        /* ستایلی وەسڵەکە بۆ پێشاندان (رێک وەک ئەسڵییەکە) */
-        .receipt-preview {
-            width: 100%; max-width: 450px; border: 2px solid #002d62; padding: 15px;
-            background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-radius: 6px;
-            box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between;
+        .receipt-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            font-size: 11px;
+            color: #002d62;
+            font-weight: bold;
+            margin-top: 5px;
         }
-        .receipt-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #d32f2f; padding-bottom: 5px; }
-        .company-title { margin: 0; font-size: 20px; color: #002d62; font-weight: bold; }
-        .company-subtitle { margin: 2px 0 0 0; font-size: 10px; color: #d32f2f; font-weight: bold; }
-        .logo-slot { max-width: 60px; max-height: 60px; object-fit: contain; margin-bottom: 5px; display: none; }
-        .receipt-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        .receipt-table th, .receipt-table td { border: 1px solid #002d62; padding: 6px; text-align: center; font-size: 11px; color: #002d62; }
-        .notes { margin-top: 10px; font-size: 12px; color: #002d62; font-weight: bold; }
-        .footer-row { display: flex; justify-content: space-between; margin-top: 15px; font-size: 12px; color: #002d62; font-weight: bold; }
-        .sig-box { text-align: center; width: 70px; border-top: 1px dashed #002d62; margin-top: 20px; padding-top: 5px; }
+        .sig-box { text-align: center; width: 80px; border-top: 1px dashed #002d62; padding-top: 3px; }
+
+        /* --------------------------------------------------
+           ستایلی چاپکردن (شاردنەوەی شتە زیادەکان)
+        -------------------------------------------------- */
+        @media print {
+            body { background-color: transparent; padding: 0; }
+            .top-bar { display: none; }
+            @page { size: A4 portrait; margin: 0; }
+            .a4-page {
+                width: 210mm;
+                height: 297mm;
+                box-shadow: none;
+                margin: 0;
+                page-break-after: always;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <div class="editor-panel">
-        <h3>⚙️ ڕێکخستنی ڕوکاری وەسڵ</h3>
-        
-        <div class="form-group">
-            <label>ناوی سەرەکی کۆمپانیا:</label>
-            <input type="text" id="mainTitleInput" value="MS Company Ltd.">
-        </div>
-        
-        <div class="form-group">
-            <label>ژێردێڕ (سەبتایتڵ):</label>
-            <input type="text" id="subTitleInput" value="بۆ بەرهەمهێنانی کێبڵی مس و پاسبار / سنوردار">
-        </div>
-
-        <div class="form-group">
-            <label>وێنە / لۆگۆی کۆمپانیا:</label>
-            <input type="file" id="logoInput" accept="image/*">
-        </div>
-
-        <div class="form-group">
-            <label>بەرزی خانەکانی خشتە (قەبارە):</label>
-            <select id="tableHeightInput">
-                <option value="35px">بچووک</option>
-                <option value="55px" selected>ناوەند (ستاندارد)</option>
-                <option value="80px">گەورە</option>
-                <option value="110px">زۆر گەورە</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label>دەقی تێبینی:</label>
-            <input type="text" id="notesInput" value="تێبینی: ....................................................................................">
-        </div>
-
-        <button class="btn" onclick="saveSettings()">💾 پاشەکەوتکردنی گۆڕانکارییەکان</button>
+    <div class="top-bar">
+        <h3 style="margin: 0 0 10px 0; color: #002d62;">چاوپێکەوتنی چاپی ٤ وەسڵی لاکێشەیی لەسەر یەک A4</h3>
         <a href="index.html" class="btn btn-back">⬅️ گەڕانەوە بۆ لاپەڕەی سەرەکی</a>
+        <button class="btn btn-print" onclick="window.print()">🖨️ تاقیکردنەوەی چاپ (Print)</button>
     </div>
 
-    <div class="preview-panel">
-        <div class="receipt-preview">
-            <div>
-                <div class="receipt-header">
-                    <div>
-                        <img id="logoPreview" class="logo-slot" src="" alt="Logo">
-                        <h1 id="mainTitlePreview" class="company-title">MS Company Ltd.</h1>
-                        <p id="subTitlePreview" class="company-subtitle">بۆ بەرهەمهێنانی کێبڵی مس و پاسبار / سنوردار</p>
-                    </div>
-                    <h2 style="color: #002d62; margin:0;">وەسڵ</h2>
+    <div class="a4-page">
+        
+        <div class="receipt-landscape">
+            <div class="receipt-header">
+                <div class="company-info">
+                    <h1>MS Company Ltd.</h1>
+                    <p>بۆ بەرهەمهێنانی کێبڵی مس و پاسبار / سنوردار</p>
                 </div>
-                
-                <div style="display:flex; justify-content:space-between; margin-top:5px; font-size:11px; color:#002d62; font-weight:bold;">
-                    <div>ژمارە: <span style="color:#d32f2f;">1</span></div>
-                    <div>بەروار: ٢٠٢٦ / __ / __</div>
-                </div>
-
-                <table class="receipt-table">
-                    <thead>
-                        <tr>
-                            <th>ناوی شۆفێر</th>
-                            <th>کاتی دەستپێکردن</th>
-                            <th>کاتی کۆتایی</th>
-                            <th>نرخ</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td id="tableCellPreview" style="height: 55px;"></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <div id="notesPreview" class="notes">تێبینی: ....................................................................................</div>
+                <h2 style="color: #002d62; margin: 0; font-size: 18px;">وەسڵی ژمارە: ١</h2>
             </div>
+            
+            <table class="receipt-table">
+                <thead>
+                    <tr>
+                        <th>ناوی شۆفێر</th>
+                        <th>کاتی دەستپێکردن</th>
+                        <th>کاتی کۆتایی هاتن</th>
+                        <th>کۆی کارکردن</th>
+                        <th>نرخ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="height: 30px;"></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
 
-            <div class="footer-row">
-                <div>کۆی گشتی: ...................</div>
+            <div class="receipt-footer">
+                <div>تێبینی: ................................................................................</div>
                 <div class="sig-box">شوفێر</div>
                 <div class="sig-box">چاوەدێر</div>
             </div>
         </div>
+
+        <div class="receipt-landscape">
+            <div class="receipt-header">
+                <div class="company-info">
+                    <h1>MS Company Ltd.</h1>
+                    <p>بۆ بەرهەمهێنانی کێبڵی مس و پاسبار / سنوردار</p>
+                </div>
+                <h2 style="color: #002d62; margin: 0; font-size: 18px;">وەسڵی ژمارە: ٢</h2>
+            </div>
+            
+            <table class="receipt-table">
+                <thead>
+                    <tr>
+                        <th>ناوی شۆفێر</th>
+                        <th>کاتی دەستپێکردن</th>
+                        <th>کاتی کۆتایی هاتن</th>
+                        <th>کۆی کارکردن</th>
+                        <th>نرخ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="height: 30px;"></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="receipt-footer">
+                <div>تێبینی: ................................................................................</div>
+                <div class="sig-box">شوفێر</div>
+                <div class="sig-box">چاوەدێر</div>
+            </div>
+        </div>
+
+        <div class="receipt-landscape">
+            <div class="receipt-header">
+                <div class="company-info">
+                    <h1>MS Company Ltd.</h1>
+                    <p>بۆ بەرهەمهێنانی کێبڵی مس و پاسبار / سنوردار</p>
+                </div>
+                <h2 style="color: #002d62; margin: 0; font-size: 18px;">وەسڵی ژمارە: ٣</h2>
+            </div>
+            
+            <table class="receipt-table">
+                <thead>
+                    <tr>
+                        <th>ناوی شۆفێر</th>
+                        <th>کاتی دەستپێکردن</th>
+                        <th>کاتی کۆتایی هاتن</th>
+                        <th>کۆی کارکردن</th>
+                        <th>نرخ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="height: 30px;"></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="receipt-footer">
+                <div>تێبینی: ................................................................................</div>
+                <div class="sig-box">شوفێر</div>
+                <div class="sig-box">چاوەدێر</div>
+            </div>
+        </div>
+
+        <div class="receipt-landscape">
+            <div class="receipt-header">
+                <div class="company-info">
+                    <h1>MS Company Ltd.</h1>
+                    <p>بۆ بەرهەمهێنانی کێبڵی مس و پاسبار / سنوردار</p>
+                </div>
+                <h2 style="color: #002d62; margin: 0; font-size: 18px;">وەسڵی ژمارە: ٤</h2>
+            </div>
+            
+            <table class="receipt-table">
+                <thead>
+                    <tr>
+                        <th>ناوی شۆفێر</th>
+                        <th>کاتی دەستپێکردن</th>
+                        <th>کاتی کۆتایی هاتن</th>
+                        <th>کۆی کارکردن</th>
+                        <th>نرخ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="height: 30px;"></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="receipt-footer">
+                <div>تێبینی: ................................................................................</div>
+                <div class="sig-box">شوفێر</div>
+                <div class="sig-box">چاوەدێر</div>
+            </div>
+        </div>
+
     </div>
 
-    <script>
-        // لۆجیکی نوێکردنەوەی ڕاستەوخۆی شاشەکە (Live Update)
-        const mainTitleInput = document.getElementById('mainTitleInput');
-        const subTitleInput = document.getElementById('subTitleInput');
-        const notesInput = document.getElementById('notesInput');
-        const tableHeightInput = document.getElementById('tableHeightInput');
-        const logoInput = document.getElementById('logoInput');
-
-        const mainTitlePreview = document.getElementById('mainTitlePreview');
-        const subTitlePreview = document.getElementById('subTitlePreview');
-        const notesPreview = document.getElementById('notesPreview');
-        const tableCellPreview = document.getElementById('tableCellPreview');
-        const logoPreview = document.getElementById('logoPreview');
-
-        let base64Logo = "";
-
-        // گوێگرتن لە گۆڕانکارییەکان
-        mainTitleInput.addEventListener('input', () => mainTitlePreview.innerText = mainTitleInput.value);
-        subTitleInput.addEventListener('input', () => subTitlePreview.innerText = subTitleInput.value);
-        notesInput.addEventListener('input', () => notesPreview.innerText = notesInput.value);
-        tableHeightInput.addEventListener('change', () => tableCellPreview.style.height = tableHeightInput.value);
-
-        // هێنانە ناوەوەی وێنە و گۆڕینی بۆ Base64
-        logoInput.addEventListener('change', function() {
-            const file = this.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    base64Logo = e.target.result;
-                    logoPreview.src = base64Logo;
-                    logoPreview.style.display = "block";
-                }
-                reader.readAsDataURL(file);
-            }
-        });
-
-        // پاشەکەوتکردن لە ناو لۆکاڵ ستۆریج
-        function saveSettings() {
-            localStorage.setItem('ms_mainTitle', mainTitleInput.value);
-            localStorage.setItem('ms_subTitle', subTitleInput.value);
-            localStorage.setItem('ms_notes', notesInput.value);
-            localStorage.setItem('ms_tableHeight', tableHeightInput.value);
-            if(base64Logo) {
-                localStorage.setItem('ms_logo', base64Logo);
-            }
-            alert('⚙️ گۆڕانکارییەکان بە سەرکەوتوویی پاشەکەوت کران!');
-        }
-
-        // بارکردنی داتاکان ئەگەر پێشتر پاشەکەوت کرابن
-        window.onload = function() {
-            if(localStorage.getItem('ms_mainTitle')) {
-                mainTitleInput.value = localStorage.getItem('ms_mainTitle');
-                subTitleInput.value = localStorage.getItem('ms_subTitle');
-                notesInput.value = localStorage.getItem('ms_notes');
-                tableHeightInput.value = localStorage.getItem('ms_tableHeight');
-                base64Logo = localStorage.getItem('ms_logo') || "";
-                
-                // جێبەجێکردن لەسەر پریڤیو
-                mainTitlePreview.innerText = mainTitleInput.value;
-                subTitlePreview.innerText = subTitleInput.value;
-                notesPreview.innerText = notesInput.value;
-                tableCellPreview.style.height = tableHeightInput.value;
-                if(base64Logo) {
-                    logoPreview.src = base64Logo;
-                    logoPreview.style.display = "block";
-                }
-            }
-        }
-    </script>
 </body>
 </html>
