@@ -205,6 +205,7 @@
             height: 38px;
         }
 
+        /* بەشی خوارەوەی وەسڵەکە - ئیمزاکان لای چەپ و ڕاست */
         .receipt-footer {
             display: flex;
             justify-content: space-between;
@@ -213,30 +214,15 @@
             color: #002d62;
             font-weight: bold;
             margin-top: 4px;
-        }
-        
-        .footer-right {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            width: 50%;
-        }
-        .line-dots {
-            color: #002d62;
-            font-weight: normal;
+            width: 100%;
         }
 
-        .footer-left {
-            display: flex;
-            gap: 50px;
-            align-items: flex-end;
-        }
         .sig-container {
             text-align: center;
             font-size: 11px;
         }
         .sig-line {
-            width: 85px;
+            width: 110px;
             margin-top: 18px;
         }
         .blue-copy .sig-line { border-top: 1px dashed #0056b3; }
@@ -298,7 +284,6 @@
         function generateAllReceipts() {
             printArea.innerHTML = ''; 
             
-            // وەرگرتنی مەودای لاپەڕەکان لە ئینپوتەکانەوە
             let startPage = parseInt(document.getElementById('start-page').value) || 1;
             let endPage = parseInt(document.getElementById('end-page').value) || 10;
             
@@ -309,8 +294,6 @@
                 return;
             }
 
-            // هەژمارکردنی ئەوەی لوپەکە لە کام ژمارە پسوڵەوە دەستپێبکات و لە کامە کۆتایی بێت
-            // هەر لاپەڕەیەک ٢ ژمارە تێدەپەڕێنێت (چونکە ٢ شین و ٢ سووری تێدایە)
             let startLoop = ((startPage - 1) * 2) + 1;
             let endLoop = endPage * 2;
 
@@ -345,7 +328,7 @@
                                             <h1 class="en-title">MS Company Ltd.</h1>
                                             <div class="meta-info">
                                                 <div>ژمارە: <span style="color:${item.borderHex}; font-size: 13px;">${item.num}</span></div>
-                                                <div>بەروار: ___ / ___ / ___ ٢٠٢</div>
+                                                <div style="direction: ltr; text-align: right;">٢٠٢ &nbsp; / &nbsp; &nbsp; &nbsp; / &nbsp; &nbsp; &nbsp; :بەروار</div>
                                             </div>
                                         </div>
                                     </div>
@@ -353,13 +336,13 @@
                                     <table class="receipt-table">
                                         <thead>
                                             <tr>
-                                                <th style="width: 25%;">ناوی شۆفێر</th>
-                                                <th style="width: 12%;">کاتی دەستپێکردن<br><span style="font-size:9px; font-weight:normal;">کاتژمێر</span></th>
-                                                <th style="width: 12%;">کاتی کۆتایی هاتن<br><span style="font-size:9px; font-weight:normal;">کاتژمێر</span></th>
-                                                <th style="width: 15%;">کۆی کارکردن<br><span style="font-size:9px; font-weight:normal;">کاتژمێر / ڕۆژ</span></th>
+                                                <th style="width: 28%;">ناوی شۆفێر</th>
+                                                <th style="width: 14%;">کاتی دەستپێکردن<br><span style="font-size:9px; font-weight:normal;">کاتژمێر</span></th>
+                                                <th style="width: 14%;">کاتی کۆتایی هاتن<br><span style="font-size:9px; font-weight:normal;">کاتژمێر</span></th>
+                                                <th style="width: 11%;">کۆی کارکردن<br><span style="font-size:9px; font-weight:normal;">سەعات/ڕۆژ</span></th>
                                                 <th style="width: 11%;">نرخ</th>
                                                 <th style="width: 11%;">کۆی نرخ</th>
-                                                <th style="width: 14%;">تێبینی</th>
+                                                <th style="width: 11%;">تێبینی</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -377,18 +360,13 @@
                                 </div>
 
                                 <div class="receipt-footer">
-                                    <div class="footer-right">
-                                        <div>کۆی گشتی نرخ: <span class="line-dots">................................................................................................</span></div>
+                                    <div class="sig-container">
+                                        <span>چاوەدێر</span>
+                                        <div class="sig-line"></div>
                                     </div>
-                                    <div class="footer-left">
-                                        <div class="sig-container">
-                                            <span>چاوەدێر</span>
-                                            <div class="sig-line"></div>
-                                        </div>
-                                        <div class="sig-container" style="font-size: 10px;">
-                                            <span>ئیمزای خاوەن ئامێر</span>
-                                            <div class="sig-line" style="margin-top: 17px;"></div>
-                                        </div>
+                                    <div class="sig-container" style="font-size: 10px;">
+                                        <span>ئیمزای خاوەن ئامێر</span>
+                                        <div class="sig-line" style="margin-top: 17px;"></div>
                                     </div>
                                 </div>
                             </div>
@@ -401,7 +379,6 @@
             }
         }
 
-        // بۆ یەکەمجار ١ تا ١٠ لاپەڕە ڕەندر دەکات
         generateAllReceipts();
     </script>
 </body>
