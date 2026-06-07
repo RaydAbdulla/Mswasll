@@ -15,7 +15,7 @@
 
         .controls {
             background-color: #ffffff;
-            padding: 15px;
+            padding: 20px;
             border-radius: 12px;
             margin-bottom: 25px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
@@ -27,6 +27,48 @@
             margin-left: auto;
             margin-right: auto;
         }
+
+        .filter-section {
+            background-color: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            border: 1px solid #e2e8f0;
+        }
+
+        .filter-section label {
+            font-size: 14px;
+            font-weight: bold;
+            color: #002d62;
+        }
+
+        .filter-section input {
+            width: 70px;
+            padding: 6px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .btn-filter {
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            padding: 7px 15px;
+            font-size: 13px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-filter:hover { background-color: #004085; }
 
         .btn-print {
             background-color: #28a745;
@@ -83,17 +125,15 @@
             position: relative;
         }
 
-        /* ستایلی نوێی ڕەنگە کاڵەکان بۆ چوارچێوە و پاشبنەما */
         .receipt-landscape.blue-copy {
             border: 2px solid #0056b3;
-            background-color: #f4f8fc !important; /* شینی زۆر کاڵ */
+            background-color: #f4f8fc !important; 
         }
         .receipt-landscape.red-copy {
             border: 2px solid #c82333;
-            background-color: #fdf5f5 !important; /* سووری زۆر کاڵ */
+            background-color: #fdf5f5 !important; 
         }
 
-        /* بەشی سەرەوەی وەسڵ */
         .receipt-header { 
             display: flex; 
             justify-content: space-between; 
@@ -142,7 +182,6 @@
             font-weight: bold;
         }
 
-        /* خشتەی نوێی وەسڵەکە بە ڕەنگی جێگیر */
         .receipt-table { 
             width: 100%; 
             border-collapse: collapse; 
@@ -166,7 +205,6 @@
             height: 38px;
         }
 
-        /* بەشی خوارەوەی وەسڵەکە */
         .receipt-footer {
             display: flex;
             justify-content: space-between;
@@ -239,22 +277,50 @@
 <body>
 
     <div class="controls">
-        <button class="btn-print" onclick="window.print()">🖨️ چاپکردنی سەرجەم وەسڵەکان (شین ➖ سوور)</button>
-        <div class="info-status">📊 دۆخی ئامادەکاری: ڕێکخستنی کاڵ (شین ➖ سوور ➖ شین ➖ سوور) بەدوای یەکدا مۆدێلی خشتەی نوێ</div>
+        <div class="filter-section">
+            <label>چاپکردنی لاپەڕە لە:</label>
+            <input type="number" id="start-page" value="1" min="1" max="100">
+            <label>تا لاپەڕەی:</label>
+            <input type="number" id="end-page" value="10" min="1" max="100">
+            <button class="btn-filter" onclick="generateAllReceipts()">🔄 جێبەجێکردن</button>
+        </div>
+
+        <button class="btn-print" onclick="window.print()">🖨️ چاپکردنی لاپەڕە دیاریکراوەکان</button>
+        <div class="info-status" id="status-text">📊 دۆخی ئامادەکاری: ڕێکخستنی کاڵ (شین ➖ سوور)</div>
     </div>
 
     <div id="print-area"></div>
 
     <script>
         const printArea = document.getElementById('print-area');
+        const statusText = document.getElementById('status-text');
 
         function generateAllReceipts() {
             printArea.innerHTML = ''; 
             
-            for (let i = 1; i <= 200; i += 2) {
+            // وەرگرتنی مەودای لاپەڕەکان لە ئینپوتەکانەوە
+            let startPage = parseInt(document.getElementById('start-page').value) || 1;
+            let endPage = parseInt(document.getElementById('end-page').value) || 10;
+            
+            if(startPage < 1) startPage = 1;
+            if(endPage > 100) endPage = 100;
+            if(startPage > endPage) {
+                alert("تکایە ژمارەی دەستپێكردن بچووکتر بێت لە کۆتایی");
+                return;
+            }
+
+            // هەژمارکردنی ئەوەی لوپەکە لە کام ژمارە پسوڵەوە دەستپێبکات و لە کامە کۆتایی بێت
+            // هەر لاپەڕەیەک ٢ ژمارە تێدەپەڕێنێت (چونکە ٢ شین و ٢ سووری تێدایە)
+            let startLoop = ((startPage - 1) * 2) + 1;
+            let endLoop = endPage * 2;
+
+            statusText.innerText = `📊 پیشاندانی لاپەڕەی ${startPage} تا ${endPage} (وەسڵی ژمارە ${startLoop} تا ${endLoop > 200 ? 200 : endLoop})`;
+
+            for (let i = startLoop; i <= endLoop; i += 2) {
+                if (i > 200) break;
+                
                 let pageHtml = `<div class="a4-page">`;
                 
-                // ڕێکخستنی چوار وەسڵەکە: ژمارە i (شین)، ژمارە i (سوور)، ژمارە i+1 (شین)، ژمارە i+1 (سوور)
                 const receiptSequence = [
                     { num: i, type: 'blue-copy', borderHex: '#0056b3' },
                     { num: i, type: 'red-copy', borderHex: '#c82333' },
@@ -279,7 +345,7 @@
                                             <h1 class="en-title">MS Company Ltd.</h1>
                                             <div class="meta-info">
                                                 <div>ژمارە: <span style="color:${item.borderHex}; font-size: 13px;">${item.num}</span></div>
-                                                <div>بەروار: ٢٠٢٦ / __ / __</div>
+                                                <div>بەروار: ___ / ___ / ___ ٢٠٢</div>
                                             </div>
                                         </div>
                                     </div>
@@ -287,17 +353,19 @@
                                     <table class="receipt-table">
                                         <thead>
                                             <tr>
-                                                <th style="width: 14%;">کاتی دەستپێکردن<br><span style="font-size:9px; font-weight:normal;">سەعات</span></th>
-                                                <th style="width: 14%;">کاتی کۆتایی هاتن<br><span style="font-size:9px; font-weight:normal;">سەعات</span></th>
-                                                <th style="width: 16%;">کۆی کارکردن<br><span style="font-size:9px; font-weight:normal;">سەعات / ڕۆژ</span></th>
-                                                <th style="width: 14%;">نرخ</th>
-                                                <th style="width: 15%;">کۆی نرخ</th>
-                                                <th style="width: 27%;">تێبینی</th>
+                                                <th style="width: 25%;">ناوی شۆفێر</th>
+                                                <th style="width: 12%;">کاتی دەستپێکردن<br><span style="font-size:9px; font-weight:normal;">کاتژمێر</span></th>
+                                                <th style="width: 12%;">کاتی کۆتایی هاتن<br><span style="font-size:9px; font-weight:normal;">کاتژمێر</span></th>
+                                                <th style="width: 15%;">کۆی کارکردن<br><span style="font-size:9px; font-weight:normal;">کاتژمێر / ڕۆژ</span></th>
+                                                <th style="width: 11%;">نرخ</th>
+                                                <th style="width: 11%;">کۆی نرخ</th>
+                                                <th style="width: 14%;">تێبینی</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr>
                                                 <td class="empty-cell"></td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
@@ -333,6 +401,7 @@
             }
         }
 
+        // بۆ یەکەمجار ١ تا ١٠ لاپەڕە ڕەندر دەکات
         generateAllReceipts();
     </script>
 </body>
