@@ -313,10 +313,19 @@
     <div class="controls">
         <div class="filter-section">
             <label>چاپکردنی لاپەڕە لە:</label>
-            <input type="number" id="start-page" value="1" min="1" max="100">
+            <input type="number" id="start-page" value="1" min="1" max="500">
             <label>تا لاپەڕەی:</label>
-            <input type="number" id="end-page" value="10" min="1" max="100">
-            <button class="btn-filter" onclick="confirmAndGenerate()">🔄 جێبەجێکردن</button>
+            <input type="number" id="end-page" value="10" min="1" max="500">
+            <button class="btn-filter" onclick="confirmAndGenerateByPage()">🔄 جێبەجێکردن</button>
+        </div>
+
+        <div class="filter-section">
+            <label style="width:100%; text-align:center; margin-bottom:4px;">وەسڵی ms</label>
+            <label>لە وەسڵی:</label>
+            <input type="number" id="start-receipt" value="1" min="1" max="1000">
+            <label>تا وەسڵی:</label>
+            <input type="number" id="end-receipt" value="10" min="1" max="1000">
+            <button class="btn-filter" onclick="confirmAndGenerateByReceipt()">🔄 جێبەجێکردن</button>
         </div>
 
         <button class="btn-print" onclick="window.print()">🖨️ چاپکردنی لاپەڕە دیاریکراوەکان</button>
@@ -328,41 +337,81 @@
     <script>
         const printArea = document.getElementById('print-area');
         const statusText = document.getElementById('status-text');
+        const MAX_RECEIPT = 1000;
+        const MAX_PAGE = 500; // 500 لاپەڕە * 2 وەسڵ = 1000 وەسڵ
 
-        // فەنکشنی نوێ بۆ پرسیارکردن لە بەکارهێنەر پێش جێبەجێکردن
-        function confirmAndGenerate() {
+        // فەنکشنی نوێ بۆ پرسیارکردن لە بەکارهێنەر پێش جێبەجێکردن (بەپێی لاپەڕە)
+        function confirmAndGenerateByPage() {
             let startPage = document.getElementById('start-page').value;
             let endPage = document.getElementById('end-page').value;
             
             let userConfirmation = confirm(`ئایا دڵنیایت لە جێبەجێکردنی گۆڕانکارییەکان بۆ لاپەڕەی ${startPage} تا ${endPage}؟`);
             
             if (userConfirmation) {
-                generateAllReceipts();
+                generateByPage();
             }
         }
 
-        function generateAllReceipts() {
-            printArea.innerHTML = ''; 
-            
+        // فەنکشنی نوێ بۆ پرسیارکردن لە بەکارهێنەر پێش جێبەجێکردن (بەپێی ژمارەی وەسڵ)
+        function confirmAndGenerateByReceipt() {
+            let startReceipt = document.getElementById('start-receipt').value;
+            let endReceipt = document.getElementById('end-receipt').value;
+
+            let userConfirmation = confirm(`ئایا دڵنیایت لە جێبەجێکردنی گۆڕانکارییەکان بۆ وەسڵی ${startReceipt} تا ${endReceipt}؟`);
+
+            if (userConfirmation) {
+                generateByReceipt();
+            }
+        }
+
+        function generateByPage() {
             let startPage = parseInt(document.getElementById('start-page').value) || 1;
             let endPage = parseInt(document.getElementById('end-page').value) || 10;
-            
+
             if(startPage < 1) startPage = 1;
-            if(endPage > 100) endPage = 100;
+            if(endPage > MAX_PAGE) endPage = MAX_PAGE;
             if(startPage > endPage) {
                 alert("تکایە ژمارەی دەستپێكردن بچووکتر بێت لە کۆتایی");
                 return;
             }
 
-            let startLoop = ((startPage - 1) * 2) + 1;
-            let endLoop = endPage * 2;
+            let startReceipt = ((startPage - 1) * 2) + 1;
+            let endReceipt = endPage * 2;
 
-            statusText.innerText = `📊 پیشاندانی لاپەڕەی ${startPage} تا ${endPage} (وەسڵی ژمارە ${startLoop} تا ${endLoop > 200 ? 200 : endLoop})`;
+            statusText.innerText = `📊 پیشاندانی لاپەڕەی ${startPage} تا ${endPage} (وەسڵی ژمارە ${startReceipt} تا ${endReceipt > MAX_RECEIPT ? MAX_RECEIPT : endReceipt})`;
+
+            renderReceiptsInRange(startReceipt, endReceipt);
+        }
+
+        function generateByReceipt() {
+            let startReceipt = parseInt(document.getElementById('start-receipt').value) || 1;
+            let endReceipt = parseInt(document.getElementById('end-receipt').value) || 10;
+
+            if(startReceipt < 1) startReceipt = 1;
+            if(endReceipt > MAX_RECEIPT) endReceipt = MAX_RECEIPT;
+            if(startReceipt > endReceipt) {
+                alert("تکایە ژمارەی دەستپێكردن بچووکتر بێت لە کۆتایی");
+                return;
+            }
+
+            statusText.innerText = `📊 پیشاندانی وەسڵی ژمارە ${startReceipt} تا ${endReceipt}`;
+
+            renderReceiptsInRange(startReceipt, endReceipt);
+        }
+
+        function renderReceiptsInRange(startReceipt, endReceipt) {
+            printArea.innerHTML = '';
+
+            // ژمارەی هەر لاپەڕەیەک لە دوو وەسڵی پێکهاتووە (i و i+1)، بۆیە دەستپێکی هەر پەیجێک دەبێت ژمارەیەکی تاک بێت
+            let startLoop = (startReceipt % 2 === 0) ? startReceipt - 1 : startReceipt;
+            let endLoop = (endReceipt % 2 === 0) ? endReceipt : endReceipt + 1;
+            if (endLoop > MAX_RECEIPT) endLoop = (MAX_RECEIPT % 2 === 0) ? MAX_RECEIPT : MAX_RECEIPT - 1;
 
             for (let i = startLoop; i <= endLoop; i += 2) {
-                if (i > 200) break;
+                if (i > MAX_RECEIPT) break;
                 
                 let pageHtml = `<div class="a4-page">`;
+                let addedAny = false;
                 
                 const receiptSequence = [
                     { num: i, type: 'blue-copy' },
@@ -372,7 +421,8 @@
                 ];
 
                 receiptSequence.forEach(item => {
-                    if (item.num <= 200) {
+                    if (item.num <= MAX_RECEIPT && item.num >= startReceipt && item.num <= endReceipt) {
+                        addedAny = true;
                         pageHtml += `
                             <div class="receipt-landscape ${item.type}">
                                 <div>
@@ -436,12 +486,14 @@
                 });
 
                 pageHtml += `</div>`;
-                printArea.innerHTML += pageHtml;
+                if (addedAny) {
+                    printArea.innerHTML += pageHtml;
+                }
             }
         }
 
         // بۆ یەکەمجار بەبێ پۆپئەپ پەیجەکان دروست دەکات
-        generateAllReceipts();
+        generateByPage();
     </script>
 </body>
 </html>
