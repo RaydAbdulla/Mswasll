@@ -313,9 +313,9 @@
     <div class="controls">
         <div class="filter-section">
             <label>چاپکردنی لاپەڕە لە:</label>
-            <input type="number" id="start-page" value="1" min="1" max="250">
+            <input type="number" id="start-page" value="1" min="1" max="100">
             <label>تا لاپەڕەی:</label>
-            <input type="number" id="end-page" value="10" min="1" max="250">
+            <input type="number" id="end-page" value="10" min="1" max="100">
             <button class="btn-filter" onclick="confirmAndGenerate()">🔄 جێبەجێکردن</button>
         </div>
 
@@ -328,8 +328,6 @@
     <script>
         const printArea = document.getElementById('print-area');
         const statusText = document.getElementById('status-text');
-        const MAX_RECEIPT = 500;
-        const MAX_PAGE = 250; // 250 لاپەڕە * 2 وەسڵ = 500 وەسڵ
 
         // فەنکشنی نوێ بۆ پرسیارکردن لە بەکارهێنەر پێش جێبەجێکردن
         function confirmAndGenerate() {
@@ -350,7 +348,7 @@
             let endPage = parseInt(document.getElementById('end-page').value) || 10;
             
             if(startPage < 1) startPage = 1;
-            if(endPage > MAX_PAGE) endPage = MAX_PAGE;
+            if(endPage > 100) endPage = 100;
             if(startPage > endPage) {
                 alert("تکایە ژمارەی دەستپێكردن بچووکتر بێت لە کۆتایی");
                 return;
@@ -359,10 +357,10 @@
             let startLoop = ((startPage - 1) * 2) + 1;
             let endLoop = endPage * 2;
 
-            statusText.innerText = `📊 پیشاندانی لاپەڕەی ${startPage} تا ${endPage} (وەسڵی ژمارە ${startLoop} تا ${endLoop > MAX_RECEIPT ? MAX_RECEIPT : endLoop})`;
+            statusText.innerText = `📊 پیشاندانی لاپەڕەی ${startPage} تا ${endPage} (وەسڵی ژمارە ${startLoop} تا ${endLoop > 200 ? 200 : endLoop})`;
 
             for (let i = startLoop; i <= endLoop; i += 2) {
-                if (i > MAX_RECEIPT) break;
+                if (i > 200) break;
                 
                 let pageHtml = `<div class="a4-page">`;
                 
@@ -374,7 +372,7 @@
                 ];
 
                 receiptSequence.forEach(item => {
-                    if (item.num <= MAX_RECEIPT) {
+                    if (item.num <= 200) {
                         pageHtml += `
                             <div class="receipt-landscape ${item.type}">
                                 <div>
@@ -424,7 +422,7 @@
 
                                 <div class="receipt-footer">
                                     <div class="sig-container">
-                                        <span>چاودێر</span>
+                                        <span>چاوەدێر</span>
                                         <div class="sig-line"></div>
                                     </div>
                                     <div class="sig-container" style="font-size: 10px;">
